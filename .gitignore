@@ -1,0 +1,5 @@
+.env
+.eggs/*
+*.pyc
+*.egg-info
+
