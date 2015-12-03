@@ -43,6 +43,7 @@ def populate_env(env_file='.env'):
     if os.path.exists(env_file):
         with open(env_file) as ef:
             env_data = ConfigParser.SafeConfigParser()
+            env_data.optionxform = str
             env_data.readfp(SectionHeader(ef))
 
         for key, value in env_data.items(SectionHeader.header):

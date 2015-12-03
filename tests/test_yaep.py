@@ -78,8 +78,9 @@ class TestEnv(TestCase):
 
 class TestPopulateEnv(TestCase):
     def test_populate_env(self):
-        env_file = io.BytesIO('foo = bar\nbaz = biz')
+        env_file = io.BytesIO('foo = bar\nbaz = biz\nBOO = FAR')
         with monkey_patch(yaep.yaep, 'open', lambda fn: env_file):
             yaep.yaep.populate_env()
             assert(yaep.env('foo') == 'bar')
             assert(yaep.env('baz') == 'biz')
+            assert(yaep.env('BOO') == 'FAR')
