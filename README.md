@@ -51,6 +51,19 @@ values by passing in a new boolean map:
     env('pony', boolean_map={True: ['True', '1', 'Pony']})
     # Returns True
 
+On the subject of 1s and 0s - you might consider that if
+you are intending to get an integer that you will instead
+end up with 'True' or 'False' - you can overcome this by
+setting convert_booleans to False.  Additionally, you can
+cast your return value explicitly by setting the type_class,
+though note that if convert_booleans is True that will
+override your type_class.  Some examples:
+
+    # SOMETHING is set to '1' in the environment
+    env('SOMETHING') # Returns True
+    env('SOMETHING', convert_booleans=False) # Returns '1'
+    env('SOMETHING', convert_booleans=False, type_class=int) # Returns 1
+
 Finally, you can also raise an exception if a value is not
 set in your environment:
 
