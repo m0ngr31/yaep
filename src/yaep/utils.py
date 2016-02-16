@@ -1,3 +1,21 @@
+"""
+A series of utility functions for YAEP
+"""
+
+
+def str_to_bool(string, boolean_map=None):
+    if not boolean_map:
+        boolean_map = {
+            True: ['True', '1'],
+            False: ['False', '0']
+        }
+
+    for boolean in boolean_map:
+        if any(string.lower() == val.lower() for val in boolean_map[boolean]):
+            return boolean
+
+    return string
+
 
 class SectionHeader(object):
     header = 'dummy'

@@ -6,16 +6,17 @@ import yaep
 
 
 class TestStrToBool(TestCase):
-    def run_cases(self, test_cases):
+    def run_cases(self, test_cases, boolean_map=None):
         for string, expected in test_cases:
             try:
-                assert(yaep.yaep.str_to_bool(string) == expected)
+                assert(yaep.utils.str_to_bool(string, boolean_map) == expected)
             except AssertionError:
                 print 'Error testing {} - expected {}, but got {}'.format(
                     string,
                     str(expected),
-                    str(yaep.yaep.str_to_bool(string))
+                    str(yaep.utils.str_to_bool(string))
                 )
+                raise
 
     def test_bools(self):
         test_cases = [
@@ -40,13 +41,9 @@ class TestStrToBool(TestCase):
         self.run_cases(test_cases)
 
     def test_nonstr(self):
-        self.assertRaises(AttributeError, yaep.yaep.str_to_bool, 1)
+        self.assertRaises(AttributeError, yaep.utils.str_to_bool, 1)
 
     def test_custom_boolmap(self):
-        yaep.yaep.boolean_map = {
-            True: ['True', '1', 'Pony']
-        }
-
         test_cases = [
             ('True', True),
             ('true', True),
@@ -55,7 +52,9 @@ class TestStrToBool(TestCase):
             ('Pony', True)
         ]
 
-        self.run_cases(test_cases)
+        self.run_cases(test_cases, boolean_map={
+            True: ['True', '1', 'Pony']
+        })
 
 
 class TestEnv(TestCase):
@@ -74,6 +73,10 @@ class TestEnv(TestCase):
         yaep.env('FOOD', 'True', sticky=True)
         assert(yaep.env('FOOD') is True)
         assert(yaep.env('FOOD', convert_booleans=False) == 'True')
+
+    def test_raise_unset_exception(self):
+        with self.assertRaises(yaep.exceptions.UnsetException):
+            yaep.env('BEER', default=yaep.exceptions.UnsetException)
 
 
 class TestPopulateEnv(TestCase):

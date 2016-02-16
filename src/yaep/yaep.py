@@ -5,36 +5,30 @@ YAEP - Yet Another Environment Package
 
 import os
 import ConfigParser
-from utils import SectionHeader
+from .utils import SectionHeader, str_to_bool
+from .exceptions import UnsetException
 
 
-boolean_map = {
-    True: ['True', '1'],
-    False: ['False', '0']
-}
-
-
-def env(key, default=None, convert_booleans=True, sticky=False):
+def env(key, default=None, convert_booleans=True, boolean_map=None,
+        sticky=False):
     """
     Retrieves key from the environment.
     """
     value = os.getenv(key, default)
 
+    if value == default and default == UnsetException:
+        raise UnsetException('{} was unset, but is required.'.format(
+            key
+        ))
+
     if sticky and value == default:
         os.environ[key] = str(value)
 
     if convert_booleans and isinstance(value, str):
-        value = str_to_bool(value)
+        print boolean_map
+        value = str_to_bool(value, boolean_map)
 
     return value
-
-
-def str_to_bool(string):
-    for boolean in boolean_map:
-        if any(string.lower() == val.lower() for val in boolean_map[boolean]):
-            return boolean
-
-    return string
 
 
 def populate_env(env_file='.env'):

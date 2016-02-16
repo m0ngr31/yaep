@@ -46,7 +46,17 @@ to be changed to booleans on the fly.
 
 By default a case-insensitive comparison to 'True' and 'False'
 is done, along with 1 and 0.  You can change the available
-values by modifying `yaep.boolean_map`.
+values by passing in a new boolean map:
+
+    env('pony', boolean_map={True: ['True', '1', 'Pony']})
+    # Returns True
+
+Finally, you can also raise an exception if a value is not
+set in your environment:
+
+    env('IMPORTANT', default=yaep.exceptions.UnsetException)
+    # Raises yaep.exceptions.UnsetException
+
 
 Using Other Environment Sources
 -------------------------------
