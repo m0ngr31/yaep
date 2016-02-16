@@ -78,6 +78,11 @@ class TestEnv(TestCase):
         with self.assertRaises(yaep.exceptions.UnsetException):
             yaep.env('BEER', default=yaep.exceptions.UnsetException)
 
+    def test_type_class(self):
+        os.environ['FOOE'] = '5'
+        assert(yaep.env('FOOE') == '5')
+        assert(yaep.env('FOOE', type_class=int) == 5)
+
 
 class TestPopulateEnv(TestCase):
     def test_populate_env(self):

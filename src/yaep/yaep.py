@@ -10,7 +10,7 @@ from .exceptions import UnsetException
 
 
 def env(key, default=None, convert_booleans=True, boolean_map=None,
-        sticky=False):
+        sticky=False, type_class=unicode):
     """
     Retrieves key from the environment.
     """
@@ -25,10 +25,19 @@ def env(key, default=None, convert_booleans=True, boolean_map=None,
         os.environ[key] = str(value)
 
     if convert_booleans and isinstance(value, str):
-        print boolean_map
         value = str_to_bool(value, boolean_map)
 
-    return value
+        # This is sort of a weird situation - if we've autoconverted
+        # a boolean, we don't want to change its type. If somebody
+        # doesn't want this behavior they should set convert_booleans
+        # to false.
+        if isinstance(value, bool):
+            type_class = bool
+
+    if value is None:
+        return value
+    else:
+        return type_class(value)
 
 
 def populate_env(env_file='.env'):
