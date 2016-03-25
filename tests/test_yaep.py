@@ -5,58 +5,6 @@ from .utils import monkey_patch
 import yaep
 
 
-class TestStrToBool(TestCase):
-    def run_cases(self, test_cases, boolean_map=None):
-        for string, expected in test_cases:
-            try:
-                assert(yaep.utils.str_to_bool(string, boolean_map) == expected)
-            except AssertionError:
-                print 'Error testing {} - expected {}, but got {}'.format(
-                    string,
-                    str(expected),
-                    str(yaep.utils.str_to_bool(string))
-                )
-                raise
-
-    def test_bools(self):
-        test_cases = [
-            ('True', True),
-            ('true', True),
-            ('tRue', True),
-            ('1', True),
-            ('False', False),
-            ('false', False),
-            ('faLse', False),
-            ('0', False)
-        ]
-
-        self.run_cases(test_cases)
-
-    def test_nonbool_str(self):
-        test_cases = [
-            ('Pony', 'Pony'),
-            (u'Pony', u'Pony')
-        ]
-
-        self.run_cases(test_cases)
-
-    def test_nonstr(self):
-        self.assertRaises(AttributeError, yaep.utils.str_to_bool, 1)
-
-    def test_custom_boolmap(self):
-        test_cases = [
-            ('True', True),
-            ('true', True),
-            ('tRue', True),
-            ('1', True),
-            ('Pony', True)
-        ]
-
-        self.run_cases(test_cases, boolean_map={
-            True: ['True', '1', 'Pony']
-        })
-
-
 class TestEnv(TestCase):
     def test_not_in_env(self):
         assert(yaep.env('FOOA') is None)
@@ -82,6 +30,32 @@ class TestEnv(TestCase):
         os.environ['FOOE'] = '5'
         assert(yaep.env('FOOE') == '5')
         assert(yaep.env('FOOE', type_class=int) == 5)
+
+    def run_cases(self, test_cases, boolean_map=None):
+        for given, expected in test_cases:
+            try:
+                assert(
+                    yaep.env(
+                        'YAEP_TEST_NOT_THERE',
+                        given,
+                        boolean_map
+                    ) == expected
+                )
+            except AssertionError:
+                print 'Error testing {} - expected {}, but got {}'.format(
+                    given,
+                    str(expected),
+                    str(yaep.env('YAEP_TEST_NOT_THERE', given))
+                )
+                raise
+
+    def test_boolean_defaults(self):
+        test_cases = [
+            (True, True),
+            (False, False),
+        ]
+
+        self.run_cases(test_cases)
 
 
 class TestPopulateEnv(TestCase):

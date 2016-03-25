@@ -34,7 +34,8 @@ def env(key, default=None, convert_booleans=True, boolean_map=None,
         if isinstance(value, bool):
             type_class = bool
 
-    if value is None:
+    # If we've just used the default or if it's None, just return that
+    if value is None or value == default:
         return value
     else:
         return type_class(value)
