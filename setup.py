@@ -31,6 +31,8 @@ config = {
     'description': 'YAEP - Yet Another Environment Package',
     'long_description': pypandoc.convert(long_description, 'rst', format='md'),
     'author': 'James Kelly',
+    'author_email': 'pthread1981@gmail.com',
+    'license': 'ISC',
     'url': 'https://github.com/jimjkelly/yaep',
     'version': __version__,
     'install_requires': requirements,
